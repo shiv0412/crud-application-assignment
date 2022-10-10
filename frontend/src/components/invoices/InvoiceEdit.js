@@ -5,6 +5,7 @@ import * as yup from "yup";
 import { connect } from "react-redux";
 import axios from "axios";
 import uniqueRandom from "unique-random";
+import _ from "lodash";
 
 import CustomErrorMessage from "../shared/CustomerErrorMessage";
 import { SelectField } from "../shared/CustomSelectField";
@@ -87,6 +88,12 @@ const Button = styled.button`
   font-family: Arial, Helvetica, sans-serif;
 `;
 const Label = styled.label``;
+const TotalDetails = styled.div`
+  text-align: right;
+  padding-right: 40px;
+  border-top:1px solid black;
+  border-bottom:1px solid black;
+`;
 
 const InvoiceEdit = ({
   isEditing,
@@ -103,6 +110,7 @@ const InvoiceEdit = ({
   const [isProductAddedToInvoice, setIsProductAddedToInvoice] =
     React.useState(false);
   const randomNumber = uniqueRandom(11000, 20000); //just for test not a real use case
+  const invoiceItemsTotal = [];
 
   if (!isEditing) {
     return null;
@@ -266,10 +274,19 @@ const InvoiceEdit = ({
                                 parseInt(product.productQuantity)}
                             </td>
                           </tr>
+                          <span style={{ display: "none" }}>
+                            {invoiceItemsTotal.push(
+                              parseInt(product.unitPrice) *
+                                parseInt(product.productQuantity)
+                            )}
+                          </span>
                         </>
                       );
                     })}
                 </table>
+                <TotalDetails>
+                  <b>Invoice Total</b> : &#8377; {_.sum(invoiceItemsTotal)}
+                </TotalDetails>
               </div>
             </div>
           )}
