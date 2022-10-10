@@ -48,6 +48,7 @@ const Invoices = ({
   customersDetails,
   productsDetails,
   saveInvoicesDetailsToStore,
+  handleDataLoad
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isInvoicesRecordsUpdated, setInvoicesRecordsUpdated] = useState(false);
@@ -56,12 +57,19 @@ const Invoices = ({
   useEffect(() => {
     axios
       .get("https://shivomcrudapi.herokuapp.com/invoices")
-      .then((response) => saveInvoicesDetailsToStore(response.data))
-      .catch((error) => toastErrorNotification(error.message));
+      .then((response) => {
+        saveInvoicesDetailsToStore(response.data);
+        handleDataLoad(true, "invoice");
+      })
+      .catch((error) => {
+        toastErrorNotification(error.message);
+        handleDataLoad(true, "invoice");
+      });
     setInvoicesRecordsUpdated(false);
   }, [isInvoicesRecordsUpdated, isEditing]);
 
   const handleInvoiceDelete = (invoiceNumber) => {
+    handleDataLoad(false, "invoice");
     axios({
       method: "delete",
       url: "https://shivomcrudapi.herokuapp.com/invoices/" + invoiceNumber,
@@ -72,6 +80,7 @@ const Invoices = ({
       })
       .catch((error) => {
         toastErrorNotification(error.message);
+        handleDataLoad(true, "invoice");
       });
   };
 
@@ -94,6 +103,7 @@ const Invoices = ({
         <InvoiceReadTable
           allInvoices={invoicesDetails}
           handleInvoiceDelete={handleInvoiceDelete}
+          handleDataLoad={handleDataLoad}
         />
         <InvoiceEdit
           handlePopUpClose={() => setIsEditing(false)}
@@ -101,6 +111,7 @@ const Invoices = ({
           label={label}
           customersDetails={customersDetails}
           productsDetails={productsDetails}
+          handleDataLoad={handleDataLoad}
         />
       </Container>
     </>

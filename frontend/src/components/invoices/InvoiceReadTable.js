@@ -36,7 +36,11 @@ const TableContainer = styled.div`
   }
 `;
 
-const InvoiceReadTable = ({ allInvoices, handleInvoiceDelete }) => {
+const InvoiceReadTable = ({
+  allInvoices,
+  handleInvoiceDelete,
+  handleDataLoad,
+}) => {
   const [isShowInvoiceDetails, setIsShowInvoiceDetails] = useState(false);
   const [invoiceProductDetails, setInvoiceProductDetails] = useState([]);
   const [invoiceBillingDetails, setInvoiceBillingDetails] = useState([]);
@@ -47,10 +51,20 @@ const InvoiceReadTable = ({ allInvoices, handleInvoiceDelete }) => {
   });
 
   const handleViewInvoice = (invoiceNumber) => {
+    handleDataLoad(false, "invoice");
     axios
-      .get("https://shivomcrudapi.herokuapp.com/purchased-products-details/" + invoiceNumber)
-      .then((response) => setInvoiceProductDetails(response.data))
-      .catch((error) => toastErrorNotification(error.message));
+      .get(
+        "https://shivomcrudapi.herokuapp.com/purchased-products-details/" +
+          invoiceNumber
+      )
+      .then((response) => {
+        setInvoiceProductDetails(response.data);
+        handleDataLoad(true, "invoice");
+      })
+      .catch((error) => {
+        toastErrorNotification(error.message);
+        handleDataLoad(true, "invoice");
+      });
     const billingDetails =
       allInvoices && allInvoices.length > 0
         ? allInvoices.filter((allInvoices) => {

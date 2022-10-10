@@ -10,6 +10,7 @@ import {
   toastSuccessNotification,
   toastErrorNotification,
 } from "../../constants";
+import Spinner from "../shared/Spinner";
 
 const Contianer = styled.div`
   width: 100%;
@@ -40,7 +41,11 @@ const Header = styled.div`
   }
 `;
 
-const Customer = ({ customersData, saveCustomersDetailsToStore }) => {
+const Customer = ({
+  customersData,
+  saveCustomersDetailsToStore,
+  handleDataLoad,
+}) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isCustomerRecordsUpdated, setCustomerRecordsUpdated] = useState(false);
   const [initialValues, setInitialValues] = useState();
@@ -49,12 +54,19 @@ const Customer = ({ customersData, saveCustomersDetailsToStore }) => {
   useEffect(() => {
     axios
       .get("https://shivomcrudapi.herokuapp.com/customers")
-      .then((response) => saveCustomersDetailsToStore(response.data))
-      .catch((error) => toastErrorNotification(error.message));
+      .then((response) => {
+        saveCustomersDetailsToStore(response.data);
+        handleDataLoad(true, "customer");
+      })
+      .catch((error) => {
+        toastErrorNotification(error.message);
+        handleDataLoad(true, "customer");
+      });
     setCustomerRecordsUpdated(false);
   }, [isCustomerRecordsUpdated, initialValues]);
 
   const handleSubmit = (values, action) => {
+    handleDataLoad(false, "customer");
     switch (action) {
       case "Add":
         axios({
@@ -69,6 +81,7 @@ const Customer = ({ customersData, saveCustomersDetailsToStore }) => {
           .then((response) => {
             if (response.data === "existing") {
               alert("LoginID already exists");
+              handleDataLoad(true, "customer");
             } else {
               setCustomerRecordsUpdated(true);
               setIsEditing(false);
@@ -78,12 +91,14 @@ const Customer = ({ customersData, saveCustomersDetailsToStore }) => {
           .catch((error) => {
             toastErrorNotification(error.message);
             setIsEditing(true);
+            handleDataLoad(true, "customer");
           });
         break;
       case "Update":
         axios({
           method: "put",
-          url: "https://shivomcrudapi.herokuapp.com/customers/" + values.loginID,
+          url:
+            "https://shivomcrudapi.herokuapp.com/customers/" + values.loginID,
           data: {
             customerName: values.customerName,
             phone: values.phone,
@@ -97,6 +112,7 @@ const Customer = ({ customersData, saveCustomersDetailsToStore }) => {
           .catch((error) => {
             toastErrorNotification(error.message);
             setIsEditing(true);
+            handleDataLoad(true, "customer");
           });
         break;
       default:
@@ -104,6 +120,7 @@ const Customer = ({ customersData, saveCustomersDetailsToStore }) => {
   };
 
   const handleCustomerDelete = (customerLoginId) => {
+    handleDataLoad(false, "customer");
     axios({
       method: "delete",
       url: "https://shivomcrudapi.herokuapp.com/customers/" + customerLoginId,
@@ -114,6 +131,7 @@ const Customer = ({ customersData, saveCustomersDetailsToStore }) => {
       })
       .catch((error) => {
         toastErrorNotification(error.message);
+        handleDataLoad(true, "customer");
       });
   };
 

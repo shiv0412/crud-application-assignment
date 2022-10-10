@@ -40,7 +40,11 @@ const Header = styled.div`
   }
 `;
 
-const Products = ({ productsData, saveProductsDetailsToStore }) => {
+const Products = ({
+  productsData,
+  saveProductsDetailsToStore,
+  handleDataLoad,
+}) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isProductsRecordsUpdated, setProductsRecordsUpdated] = useState(false);
   const [initialValues, setInitialValues] = useState();
@@ -49,12 +53,19 @@ const Products = ({ productsData, saveProductsDetailsToStore }) => {
   useEffect(() => {
     axios
       .get("https://shivomcrudapi.herokuapp.com/products")
-      .then((response) => saveProductsDetailsToStore(response.data))
-      .catch((error) => toastErrorNotification(error.message));
+      .then((response) => {
+        saveProductsDetailsToStore(response.data);
+        handleDataLoad(true, "product");
+      })
+      .catch((error) => {
+        toastErrorNotification(error.message);
+        handleDataLoad(true, "product");
+      });
     setProductsRecordsUpdated(false);
   }, [isProductsRecordsUpdated, initialValues]);
 
   const handleSubmit = (values, action) => {
+    handleDataLoad(false, "product");
     switch (action) {
       case "Add":
         axios({
@@ -68,6 +79,7 @@ const Products = ({ productsData, saveProductsDetailsToStore }) => {
           .then((response) => {
             if (response.data === "existing") {
               alert("Product already exists");
+              handleDataLoad(true, "product");
             } else {
               setProductsRecordsUpdated(true);
               setIsEditing(false);
@@ -77,12 +89,15 @@ const Products = ({ productsData, saveProductsDetailsToStore }) => {
           .catch((error) => {
             toastErrorNotification(error.message);
             setIsEditing(true);
+            handleDataLoad(true, "product");
           });
         break;
       case "Update":
         axios({
           method: "put",
-          url: "https://shivomcrudapi.herokuapp.com/products/" + values.productName,
+          url:
+            "https://shivomcrudapi.herokuapp.com/products/" +
+            values.productName,
           data: {
             productName: values.productName,
             unitPrice: values.unitPrice,
@@ -96,12 +111,14 @@ const Products = ({ productsData, saveProductsDetailsToStore }) => {
           .catch((error) => {
             toastErrorNotification(error.message);
             setIsEditing(true);
+            handleDataLoad(true, "product");
           });
         break;
     }
   };
 
   const handleProductDelete = (productName) => {
+    handleDataLoad(false, "product");
     axios({
       method: "delete",
       url: "https://shivomcrudapi.herokuapp.com/products/" + productName,
@@ -112,6 +129,7 @@ const Products = ({ productsData, saveProductsDetailsToStore }) => {
       })
       .catch((error) => {
         toastErrorNotification(error.message);
+        handleDataLoad(true, "product");
       });
   };
 

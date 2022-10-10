@@ -106,6 +106,7 @@ const InvoiceEdit = ({
   updateStore,
   setPurchasedProducts,
   setGeneratedInvoiceDetails,
+  handleDataLoad,
 }) => {
   const [isInvoiceGenerated, setIsInvoiceGenerated] = React.useState(false);
   const [isProductAddedToInvoice, setIsProductAddedToInvoice] =
@@ -153,6 +154,7 @@ const InvoiceEdit = ({
   };
 
   const handleGenerateInvoice = (values, purchasedProducts) => {
+    handleDataLoad(false, "invoice");
     const customerDetails = customersDetails.filter((customer) => {
       return customer.customerName === values.customerName;
     });
@@ -171,7 +173,9 @@ const InvoiceEdit = ({
         customerDetails: customerDetails,
         invoiceTotal: _.sum(invoiceItemsTotal),
       },
-    });
+    })
+      .then(() => handleDataLoad(true, "invoice"))
+      .catch(() => handleDataLoad(true, "invoice"));
   };
 
   const handleInvoicePopUp = () => {
