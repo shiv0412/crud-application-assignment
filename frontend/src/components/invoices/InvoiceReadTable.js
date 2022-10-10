@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import styled from "styled-components";
 import axios from "axios";
+import { useReactToPrint } from "react-to-print";
 
 import InvoiceRead from "./InvoiceRead";
 import { toastErrorNotification } from "../../constants";
@@ -39,6 +40,10 @@ const InvoiceReadTable = ({ invoices, handleInvoiceDelete }) => {
   const [isShowInvoice, setIsShowInvoice] = useState(false);
   const [invoiceProductDetails, setInvoiceProductDetails] = useState([]);
   const [invoiceBillingDetails, setInvoiceBillingDetails] = useState([]);
+  const componentRef = useRef();
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+  });
 
   const handleViewInvoice = (invoiceNumber) => {
     axios
@@ -95,6 +100,8 @@ const InvoiceReadTable = ({ invoices, handleInvoiceDelete }) => {
             handleClose={() => setIsShowInvoice(false)}
             invoiceProductDetails={invoiceProductDetails}
             invoiceBillingDetails={invoiceBillingDetails}
+            handlePrint={handlePrint}
+            ref={componentRef}
           />
         )}
       </TableContainer>

@@ -104,21 +104,36 @@ const TotalDetails = styled.div`
     border: 2px solid black;
   }
 `;
+const Button = styled.button`
+  margin: 10px auto 10px auto;
+  display: block;
+  padding: 5px 15px;
+  border: none;
+  background-color: darkred;
+  color: #fff;
+  font-family: Arial, Helvetica, sans-serif;
+  @media print {
+    display: none;
+  }
+`;
 
-const InvoiceRead = ({
-  isShowInvoice,
-  invoiceProductDetails,
-  invoiceBillingDetails,
-  handleClose,
-}) => {
+const InvoiceRead = (
+  {
+    isShowInvoice,
+    invoiceProductDetails,
+    invoiceBillingDetails,
+    handleClose,
+    handlePrint,
+  },
+  ref
+) => {
   if (!isShowInvoice) {
     return null;
   }
-  console.log(invoiceProductDetails);
 
   return (
     <>
-      <ModalContainer onClick={handleClose}>
+      <ModalContainer onClick={handleClose} >
         <ModalContent onClick={(e) => e.stopPropagation()}>
           <ModalHeader>
             <ModalTitle>Invoice Details</ModalTitle>
@@ -127,7 +142,7 @@ const InvoiceRead = ({
             </Span>
           </ModalHeader>
           <ModalBody>
-            <Contianer>
+            <Contianer ref={ref}>
               <Header>
                 <h1>Invoice</h1>
               </Header>
@@ -148,7 +163,8 @@ const InvoiceRead = ({
                       {invoiceBillingDetails[0].invoiceNumber}
                     </li>
                     <li>
-                      Invoice Date: {invoiceBillingDetails[0].invoiceDate.split("T")[0]}
+                      Invoice Date:{" "}
+                      {invoiceBillingDetails[0].invoiceDate.split("T")[0]}
                     </li>
                   </ul>
                 </div>
@@ -181,6 +197,7 @@ const InvoiceRead = ({
                 <div>&#8377; {invoiceBillingDetails[0].invoiceTotal}/-</div>
               </TotalDetails>
             </Contianer>
+            <Button onClick={() => handlePrint()}>Print Invoice</Button>
           </ModalBody>
         </ModalContent>
       </ModalContainer>
@@ -188,4 +205,4 @@ const InvoiceRead = ({
   );
 };
 
-export default InvoiceRead;
+export default React.forwardRef(InvoiceRead);
