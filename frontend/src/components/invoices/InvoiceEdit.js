@@ -9,7 +9,7 @@ import _ from "lodash";
 
 import CustomErrorMessage from "../shared/CustomerErrorMessage";
 import { SelectField } from "../shared/CustomSelectField";
-import AddProduct from "./AddProucts";
+import AddProduct from "./AddProuct";
 import { setPurchasedProducts, updateStore } from "../../redux/actions/Actions";
 import { setGeneratedInvoiceDetails } from "../../redux/actions/Actions";
 import InvoiceContainer from "./InvoiceContainer";
@@ -161,9 +161,10 @@ const InvoiceEdit = ({
       method: "post",
       url: "http://localhost:4200/invoices",
       data: {
-        invoiceNumber: values.invoiceNumber,
-        invoiceDate: values.invoiceDate,
-        customerName: values.customerName,
+        billingDetails: values,
+        purchasedProducts: purchasedProducts,
+        customerDetails: customerDetails,
+        invoiceTotal:_.sum(invoiceItemsTotal)
       },
     });
   };

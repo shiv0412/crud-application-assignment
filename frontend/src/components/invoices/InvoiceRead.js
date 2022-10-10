@@ -1,79 +1,189 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
+import InvoiceTemplate from "./InvoiceTemplate";
 
-const TableContainer = styled.div`
-  margin: 0;
-  table {
-    font-size: 13px;
-    font-weight: bold;
+//styled components
+const ModalContainer = styled.div`
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  h4 {
+    text-align: center;
+    border-bottom: 1px solid #cacfd2;
+    padding-bottom: 10px;
     color: #566573;
   }
-  th {
-    background-color: #2c3e50;
-    color: #fff;
-    padding: 10px 5px;
+`;
+const ModalContent = styled.div`
+  width: 90%;
+  background-color: #f2f3f4;
+  height: auto;
+`;
+const ModalHeader = styled.div`
+  padding: 15px;
+  font-family: Arial, Helvetica, sans-serif;
+  position: relative;
+  background-color: black;
+  color: #fff;
+`;
+const Span = styled.span`
+  position: absolute;
+  top: 12%;
+  right: 10px;
+  font-size: 20px;
+  cursor: pointer;
+`;
+const ModalTitle = styled.h5`
+  margin: 0;
+  color: #fff;
+  font-weight: bold;
+`;
+const ModalBody = styled.div`
+  border-top: 1px solid lightgray;
+  border-bottom: 1px solid lightgray;
+  padding: 0 0 20px 0;
+`;
+const Contianer = styled.div`
+  font-weight: bold;
+  padding: 25px 25px 0 25px;
+  table {
+    border: 2px solid black;
+    padding: 0;
+    margin: 0;
   }
-  tr:nth-child(odd) {
-    background-color: #f8f9f9;
-  }
-  tr:hover {
-    background-color: #f2f3f4;
+  tr {
+    border: 2px solid black;
   }
   td {
-    padding: 5px 5px;
-    i:nth-child(2) {
-      color: #5dade2;
-      margin: 0 10px;
-    }
-    i:nth-child(3) {
-      color: #ec7063;
-    }
-    i:hover {
-      cursor: pointer;
-    }
+    border: 2px solid black;
+    padding: 5px 0;
+  }
+  th {
+    border: 2px solid black;
+    padding: 10px 0;
+  }
+`;
+const Header = styled.div`
+  padding: 10px 0;
+  border: 2px solid black;
+  h1 {
+    text-align: center;
+  }
+`;
+const Details = styled.div`
+  display: flex;
+  div {
+    width: 50%;
+    border: 2px solid black;
+  }
+  ul {
+    list-style: none;
+    padding-top: 10px;
+  }
+`;
+const TotalDetails = styled.div`
+  display: flex;
+  div {
+    text-align: center;
+    padding: 15px 0;
+  }
+  div:nth-child(1) {
+    width: 90%;
+    border: 2px solid black;
+    text-align: right;
+    padding-right: 50px;
+  }
+  div:nth-child(2) {
+    width: 14.5%;
+    border: 2px solid black;
   }
 `;
 
 const InvoiceRead = ({
-  invoices,
-  handleInvoiceDelete,
+  isShowInvoice,
+  invoiceProductDetails,
+  invoiceBillingDetails,
+  handleClose,
 }) => {
+  if (!isShowInvoice) {
+    return null;
+  }
+  console.log(invoiceProductDetails);
+
   return (
     <>
-      <TableContainer>
-        <table className="table table-bordered">
-          <tr>
-            <th>Invoice No.</th>
-            <th>Invoice Date</th>
-            <th>Customer Name</th>
-            <th>Action</th>
-          </tr>
-          {invoices &&
-            invoices.map((invoice) => {
-              return (
-                <>
+      <ModalContainer onClick={handleClose}>
+        <ModalContent onClick={(e) => e.stopPropagation()}>
+          <ModalHeader>
+            <ModalTitle>Invoice Details</ModalTitle>
+            <Span>
+              <i className="window close icon" onClick={handleClose}></i>
+            </Span>
+          </ModalHeader>
+          <ModalBody>
+            <Contianer>
+              <Header>
+                <h1>Invoice</h1>
+              </Header>
+              <Details>
+                <div>
+                  <ul>
+                    <li>
+                      Cust LoginId: {invoiceBillingDetails[0].customerLoginID}
+                    </li>
+                    <li>Cust Name: {invoiceBillingDetails[0].customerName}</li>
+                    <li>Phone: {invoiceBillingDetails[0].customerPhone}</li>
+                  </ul>
+                </div>
+                <div>
+                  <ul>
+                    <li>
+                      Invoice No.:
+                      {invoiceBillingDetails[0].invoiceNumber}
+                    </li>
+                    <li>
+                      Invoice Date: {invoiceBillingDetails[0].invoiceDate.split("T")[0]}
+                    </li>
+                  </ul>
+                </div>
+              </Details>
+              <div>
+                <table className="table table-bodered">
                   <tr>
-                    <td>{invoice.invoiceNumber}</td>
-                    <td>{invoice.invoiceDate.split("T")[0]}</td>
-                    <td>{invoice.customerName}</td>
-                    <td>
-                      <i className="eye icon"></i>
-                      <i
-                        className="edit icon"
-                      ></i>
-                      <i
-                        className="trash icon"
-                        onClick={() =>
-                          handleInvoiceDelete(invoice.invoiceNumber)
-                        }
-                      ></i>
-                    </td>
+                    <th>Product Name</th>
+                    <th>Unit Price (&#8377;)</th>
+                    <th>Quantity</th>
+                    <th>Total (&#8377;)</th>
                   </tr>
-                </>
-              );
-            })}
-        </table>
-      </TableContainer>
+                  {invoiceProductDetails.length > 0 &&
+                    invoiceProductDetails.map((product) => {
+                      return (
+                        <>
+                          <tr>
+                            <td>{product.productName}</td>
+                            <td>{product.unitPrice}</td>
+                            <td>{product.quantity}</td>
+                            <td>{product.itemTotal}</td>
+                          </tr>
+                        </>
+                      );
+                    })}
+                </table>
+              </div>
+              <TotalDetails>
+                <div>Invoice Total</div>
+                <div>&#8377; {invoiceBillingDetails[0].invoiceTotal}/-</div>
+              </TotalDetails>
+            </Contianer>
+          </ModalBody>
+        </ModalContent>
+      </ModalContainer>
     </>
   );
 };

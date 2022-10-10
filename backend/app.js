@@ -158,7 +158,7 @@ app.put("/products/:name", (request, response) => {
 
 //api to fetch all invoices
 app.get("/invoices", (request, response) => {
-  database.query("select * from invoices", (error, result) => {
+  database.query("select * from billingdetails", (error, result) => {
     if (error) {
       response.send(error.message);
     } else {
@@ -170,7 +170,10 @@ app.get("/invoices", (request, response) => {
 //api to delete any invoice
 app.delete("/invoices/:id", (request, response) => {
   const id = request.params.id;
-  const sql = "DELETE FROM invoices WHERE invoices.invoiceNumber = ?";
+  const sql = "DELETE FROM billingdetails WHERE invoiceNumber = ?";
+  const deleteInvoiceProducts =
+    "DELETE FROM purchasedproducts WHERE invoiceNumber = ?";
+  database.query(deleteInvoiceProducts, id);
   database.query(sql, id, (error, result) => {
     if (error) {
       response.send(error.message);
@@ -182,12 +185,45 @@ app.delete("/invoices/:id", (request, response) => {
 
 //api to save invoices
 app.post("/invoices", (request, response) => {
-  const data = {
-    invoiceNumber: request.body.invoiceNumber,
-    customerName: request.body.customerName,
-    invoiceDate: request.body.invoiceDate,
+  const billingDetails = {
+    invoiceNumber: request.body.billingDetails.invoiceNumber,
+    invoiceDate: request.body.billingDetails.invoiceDate,
+    customerLoginID: request.body.customerDetails[0].loginID,
+    customerName: request.body.billingDetails.customerName,
+    customerPhone: request.body.customerDetails[0].phone,
+    invoiceTotal: request.body.invoiceTotal,
   };
-  database.query("INSERT INTO invoices SET ?", data, (error, result) => {
+  const purchasedProductsDetails = request.body.purchasedProducts;
+  database.query(
+    "INSERT INTO purchasedproducts (invoiceNumber, productName, unitPrice,quantity,itemTotal) VALUES ?",
+    [
+      purchasedProductsDetails.map((purchasedProduct) => [
+        billingDetails.invoiceNumber,
+        purchasedProduct.productName,
+        purchasedProduct.unitPrice,
+        purchasedProduct.productQuantity,
+        purchasedProduct.total,
+      ]),
+    ]
+  );
+  database.query(
+    "INSERT INTO billingdetails SET ?",
+    billingDetails,
+    (error, result) => {
+      if (error) {
+        response.send(error.message);
+      } else {
+        response.send(result);
+      }
+    }
+  );
+});
+
+//api to fetch all purchased products
+app.get("/purchased-products-details/:invoiceNumber", (request, response) => {
+  const invoiceNumber = request.params.invoiceNumber;
+  const sql = "SELECT * FROM purchasedproducts WHERE invoiceNumber = ?";
+  database.query(sql, invoiceNumber, (error, result) => {
     if (error) {
       response.send(error.message);
     } else {

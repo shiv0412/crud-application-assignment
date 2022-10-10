@@ -4,12 +4,12 @@ import { connect } from "react-redux";
 import styled from "styled-components";
 
 import InvoiceEdit from "./InvoiceEdit";
-import InvoiceRead from "./InvoiceRead";
 import { saveInvoicesDetailsToStore } from "../../redux/actions/Actions";
 import {
   toastSuccessNotification,
   toastErrorNotification,
 } from "../../constants";
+import InvoiceReadTable from "./InvoiceReadTable";
 
 const Contianer = styled.div`
   width: 100%;
@@ -112,7 +112,7 @@ const Invoices = ({
           </button>
         </div>
       </Header>
-      <InvoiceRead
+      <InvoiceReadTable
         invoices={invoicesData}
         editCustomerDetails={(invoiceNumber) =>
           handleCustomerEdit(invoiceNumber)
