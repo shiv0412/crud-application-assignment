@@ -4,6 +4,7 @@ const cors = require("cors");
 const app = express();
 app.use(cors());
 app.use(express.json());
+const port = process.env.PORT || 4200;
 
 //api to fetch all customers
 app.get("/customers", (request, response) => {
@@ -232,4 +233,4 @@ app.get("/purchased-products-details/:invoiceNumber", (request, response) => {
   });
 });
 
-app.listen(4200);
+app.listen(port, () => {});
