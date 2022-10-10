@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import { Field, Form, Formik } from "formik";
 
@@ -31,12 +31,18 @@ const Button = styled.button`
   display: block;
   padding: 5px 5px;
   border: none;
-  border-radius:50%;
-  color:orangered;
+  border-radius: 50%;
+  color: orangered;
   font-size: 25px;
 `;
 
 const AddProduct = ({ productData, handleProductAdd }) => {
+  const [productsOptions, setProductsOptions] = React.useState();
+
+  useEffect(() => {
+    setProductsOptions(getProductsOptions(productData));
+  }, []);
+
   const getProductsOptions = (productData) => {
     const options = [];
     productData.forEach((product) => {
@@ -47,6 +53,7 @@ const AddProduct = ({ productData, handleProductAdd }) => {
     });
     return options;
   };
+
   const getQuantityOptions = (defaultQuanity) => {
     const options = [];
     defaultQuanity.forEach((quantity) => {
@@ -57,6 +64,14 @@ const AddProduct = ({ productData, handleProductAdd }) => {
     });
     return options;
   };
+
+  const optionUpdate = (option) => {
+    const updatedOptions = productsOptions.filter((options) => {
+      return options.value !== option.productName;
+    });
+    setProductsOptions(updatedOptions);
+  };
+
   return (
     <>
       <Contianer>
@@ -69,6 +84,7 @@ const AddProduct = ({ productData, handleProductAdd }) => {
           onSubmit={(values, { setSubmitting, resetForm }) => {
             setTimeout(() => {
               handleProductAdd(values);
+              optionUpdate(values);
               setSubmitting(false);
               resetForm();
             }, 400);
@@ -80,7 +96,7 @@ const AddProduct = ({ productData, handleProductAdd }) => {
                 <StyledField
                   name={"productName"}
                   component={SelectField}
-                  options={getProductsOptions(productData)}
+                  options={productsOptions}
                   placeholder={"Select products..."}
                 />
               </div>

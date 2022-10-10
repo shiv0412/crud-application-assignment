@@ -32,8 +32,9 @@ const ModalContainer = styled.div`
   justify-content: center;
   h4 {
     text-align: center;
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid #CACFD2;
     padding-bottom: 10px;
+    color:#566573;
   }
 `;
 const ModalContent = styled.div`

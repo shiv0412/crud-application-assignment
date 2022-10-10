@@ -43,7 +43,6 @@ const Details = styled.div`
     padding-top: 10px;
   }
 `;
-
 const TotalDetails = styled.div`
   display: flex;
   div {
@@ -59,7 +58,6 @@ const TotalDetails = styled.div`
     border: 2px solid black;
   }
 `;
-
 const Button = styled.button`
   margin: 10px auto 10px auto;
   display: block;
