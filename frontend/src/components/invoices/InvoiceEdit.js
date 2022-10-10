@@ -164,6 +164,7 @@ const InvoiceEdit = ({
     updateStore();
     handleFormClose();
     setIsInvoiceGenerated(false);
+    setIsProductAddedToInvoice(false);
   };
 
   return (
