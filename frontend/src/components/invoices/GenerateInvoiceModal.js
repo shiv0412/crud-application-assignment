@@ -164,7 +164,7 @@ const InvoiceEdit = ({
     setIsInvoiceGenerated(true);
     axios({
       method: "post",
-      url: "http://localhost:4200/invoices",
+      url: "https://shivomcrudapi.herokuapp.com/invoices",
       data: {
         billingDetails: values,
         purchasedProducts: purchasedProducts,

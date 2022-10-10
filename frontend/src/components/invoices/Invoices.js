@@ -55,7 +55,7 @@ const Invoices = ({
 
   useEffect(() => {
     axios
-      .get("http://localhost:4200/invoices")
+      .get("https://shivomcrudapi.herokuapp.com/invoices")
       .then((response) => saveInvoicesDetailsToStore(response.data))
       .catch((error) => toastErrorNotification(error.message));
     setInvoicesRecordsUpdated(false);
@@ -64,7 +64,7 @@ const Invoices = ({
   const handleInvoiceDelete = (invoiceNumber) => {
     axios({
       method: "delete",
-      url: "http://localhost:4200/invoices/" + invoiceNumber,
+      url: "https://shivomcrudapi.herokuapp.com/invoices/" + invoiceNumber,
     })
       .then(() => {
         setInvoicesRecordsUpdated(true);

@@ -48,7 +48,7 @@ const Products = ({ productsData, saveProductsDetailsToStore }) => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:4200/products")
+      .get("https://shivomcrudapi.herokuapp.com/products")
       .then((response) => saveProductsDetailsToStore(response.data))
       .catch((error) => toastErrorNotification(error.message));
     setProductsRecordsUpdated(false);
@@ -59,7 +59,7 @@ const Products = ({ productsData, saveProductsDetailsToStore }) => {
       case "Add":
         axios({
           method: "post",
-          url: "http://localhost:4200/products",
+          url: "https://shivomcrudapi.herokuapp.com/products",
           data: {
             productName: values.productName,
             unitPrice: values.unitPrice,
@@ -82,7 +82,7 @@ const Products = ({ productsData, saveProductsDetailsToStore }) => {
       case "Update":
         axios({
           method: "put",
-          url: "http://localhost:4200/products/" + values.productName,
+          url: "https://shivomcrudapi.herokuapp.com/products/" + values.productName,
           data: {
             productName: values.productName,
             unitPrice: values.unitPrice,
@@ -104,7 +104,7 @@ const Products = ({ productsData, saveProductsDetailsToStore }) => {
   const handleProductDelete = (productName) => {
     axios({
       method: "delete",
-      url: "http://localhost:4200/products/" + productName,
+      url: "https://shivomcrudapi.herokuapp.com/products/" + productName,
     })
       .then(() => {
         setProductsRecordsUpdated(true);

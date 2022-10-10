@@ -48,7 +48,7 @@ const InvoiceReadTable = ({ allInvoices, handleInvoiceDelete }) => {
 
   const handleViewInvoice = (invoiceNumber) => {
     axios
-      .get("http://localhost:4200/purchased-products-details/" + invoiceNumber)
+      .get("https://shivomcrudapi.herokuapp.com/purchased-products-details/" + invoiceNumber)
       .then((response) => setInvoiceProductDetails(response.data))
       .catch((error) => toastErrorNotification(error.message));
     const billingDetails =

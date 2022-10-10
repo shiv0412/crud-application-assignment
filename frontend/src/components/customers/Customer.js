@@ -48,7 +48,7 @@ const Customer = ({ customersData, saveCustomersDetailsToStore }) => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:4200/customers")
+      .get("https://shivomcrudapi.herokuapp.com/customers")
       .then((response) => saveCustomersDetailsToStore(response.data))
       .catch((error) => toastErrorNotification(error.message));
     setCustomerRecordsUpdated(false);
@@ -59,7 +59,7 @@ const Customer = ({ customersData, saveCustomersDetailsToStore }) => {
       case "Add":
         axios({
           method: "post",
-          url: "http://localhost:4200/customers/",
+          url: "https://shivomcrudapi.herokuapp.com/customers/",
           data: {
             loginID: values.loginID,
             customerName: values.customerName,
@@ -83,7 +83,7 @@ const Customer = ({ customersData, saveCustomersDetailsToStore }) => {
       case "Update":
         axios({
           method: "put",
-          url: "http://localhost:4200/customers/" + values.loginID,
+          url: "https://shivomcrudapi.herokuapp.com/customers/" + values.loginID,
           data: {
             customerName: values.customerName,
             phone: values.phone,
@@ -106,7 +106,7 @@ const Customer = ({ customersData, saveCustomersDetailsToStore }) => {
   const handleCustomerDelete = (customerLoginId) => {
     axios({
       method: "delete",
-      url: "http://localhost:4200/customers/" + customerLoginId,
+      url: "https://shivomcrudapi.herokuapp.com/customers/" + customerLoginId,
     })
       .then(() => {
         setCustomerRecordsUpdated(true);
