@@ -3,7 +3,7 @@ import styled from "styled-components";
 import axios from "axios";
 import { useReactToPrint } from "react-to-print";
 
-import InvoiceRead from "./InvoiceRead";
+import InvoiceRead from "./InvoiceDetailsModal";
 import { toastErrorNotification } from "../../constants";
 
 const TableContainer = styled.div`
@@ -36,11 +36,12 @@ const TableContainer = styled.div`
   }
 `;
 
-const InvoiceReadTable = ({ invoices, handleInvoiceDelete }) => {
-  const [isShowInvoice, setIsShowInvoice] = useState(false);
+const InvoiceReadTable = ({ allInvoices, handleInvoiceDelete }) => {
+  const [isShowInvoiceDetails, setIsShowInvoiceDetails] = useState(false);
   const [invoiceProductDetails, setInvoiceProductDetails] = useState([]);
   const [invoiceBillingDetails, setInvoiceBillingDetails] = useState([]);
   const componentRef = useRef();
+
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
   });
@@ -51,14 +52,15 @@ const InvoiceReadTable = ({ invoices, handleInvoiceDelete }) => {
       .then((response) => setInvoiceProductDetails(response.data))
       .catch((error) => toastErrorNotification(error.message));
     const billingDetails =
-      invoices && invoices.length > 0
-        ? invoices.filter((invoices) => {
-            return invoices.invoiceNumber === invoiceNumber;
+      allInvoices && allInvoices.length > 0
+        ? allInvoices.filter((allInvoices) => {
+            return allInvoices.invoiceNumber === invoiceNumber;
           })
         : [];
     setInvoiceBillingDetails(billingDetails);
-    setIsShowInvoice(true);
+    setIsShowInvoiceDetails(true);
   };
+
   return (
     <>
       <TableContainer>
@@ -69,8 +71,8 @@ const InvoiceReadTable = ({ invoices, handleInvoiceDelete }) => {
             <th>Customer Name</th>
             <th>Action</th>
           </tr>
-          {invoices &&
-            invoices.map((invoice) => {
+          {allInvoices &&
+            allInvoices.map((invoice) => {
               return (
                 <>
                   <tr>
@@ -94,10 +96,10 @@ const InvoiceReadTable = ({ invoices, handleInvoiceDelete }) => {
               );
             })}
         </table>
-        {isShowInvoice && (
+        {isShowInvoiceDetails && (
           <InvoiceRead
-            isShowInvoice={isShowInvoice}
-            handleClose={() => setIsShowInvoice(false)}
+            isShowInvoiceDetails={isShowInvoiceDetails}
+            handlePopUpClose={() => setIsShowInvoiceDetails(false)}
             invoiceProductDetails={invoiceProductDetails}
             invoiceBillingDetails={invoiceBillingDetails}
             handlePrint={handlePrint}

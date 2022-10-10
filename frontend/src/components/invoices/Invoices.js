@@ -3,7 +3,7 @@ import axios from "axios";
 import { connect } from "react-redux";
 import styled from "styled-components";
 
-import InvoiceEdit from "./InvoiceEdit";
+import InvoiceEdit from "./GenerateInvoiceModal";
 import { saveInvoicesDetailsToStore } from "../../redux/actions/Actions";
 import {
   toastSuccessNotification,
@@ -11,7 +11,7 @@ import {
 } from "../../constants";
 import InvoiceReadTable from "./InvoiceReadTable";
 
-const Contianer = styled.div`
+const Container = styled.div`
   width: 100%;
   border-left: 1.5px solid black;
   border-right: 1.5px solid black;
@@ -44,14 +44,13 @@ const Header = styled.div`
 `;
 
 const Invoices = ({
-  invoicesData,
-  customerData,
-  productData,
+  invoicesDetails,
+  customersDetails,
+  productsDetails,
   saveInvoicesDetailsToStore,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isInvoicesRecordsUpdated, setInvoicesRecordsUpdated] = useState(false);
-  const [initialValues, setInitialValues] = useState();
   const [label, setLabel] = useState("Add");
 
   useEffect(() => {
@@ -60,7 +59,7 @@ const Invoices = ({
       .then((response) => saveInvoicesDetailsToStore(response.data))
       .catch((error) => toastErrorNotification(error.message));
     setInvoicesRecordsUpdated(false);
-  }, [isInvoicesRecordsUpdated, initialValues, isEditing]);
+  }, [isInvoicesRecordsUpdated, isEditing]);
 
   const handleInvoiceDelete = (invoiceNumber) => {
     axios({
@@ -76,68 +75,43 @@ const Invoices = ({
       });
   };
 
-  const handleCustomerEdit = (invoiceNumber) => {
-    if (invoicesData.length > 0) {
-      const customer = invoicesData.filter((customer) => {
-        return customer.loginID === invoiceNumber;
-      });
-      setInitialValues({
-        loginID: customer[0].loginID,
-        customerName: customer[0].customerName,
-        phone: customer[0].phone,
-      });
-      setIsEditing(true);
-      setLabel("Update");
-    }
-  };
-
   return (
     <>
-    <Contianer>
-      <Header>
-        <h3>Manage Invoices</h3>
-        <div>
-          <button
-            onClick={() => {
-              setIsEditing(true);
-              setInitialValues({
-                loginID: "",
-                customerName: "",
-                phone: "",
-              });
-              setLabel("Add");
-            }}
-          >
-            Generate invoice
-          </button>
-        </div>
-      </Header>
-      <InvoiceReadTable
-        invoices={invoicesData}
-        editCustomerDetails={(invoiceNumber) =>
-          handleCustomerEdit(invoiceNumber)
-        }
-        handleInvoiceDelete={handleInvoiceDelete}
-      />
-      <InvoiceEdit
-        handleFormClose={() => setIsEditing(false)}
-        isEditing={isEditing}
-        label={label}
-        invoicesData={invoicesData}
-        customerData={customerData}
-        productData={productData}
-      />
-    </Contianer>
+      <Container>
+        <Header>
+          <h3>Manage Invoices</h3>
+          <div>
+            <button
+              onClick={() => {
+                setIsEditing(true);
+                setLabel("Add");
+              }}
+            >
+              Generate invoice
+            </button>
+          </div>
+        </Header>
+        <InvoiceReadTable
+          allInvoices={invoicesDetails}
+          handleInvoiceDelete={handleInvoiceDelete}
+        />
+        <InvoiceEdit
+          handlePopUpClose={() => setIsEditing(false)}
+          isEditing={isEditing}
+          label={label}
+          customersDetails={customersDetails}
+          productsDetails={productsDetails}
+        />
+      </Container>
     </>
   );
 };
 
 const mapStateToProps = (state) => {
   return {
-    invoicesData: state.invoiceReducer,
-    customerData: state.customerReducer,
-    productData: state.productsReducer,
-    generatedInvoiceDetails: state.generatedInvoiceDetailsReducer,
+    invoicesDetails: state.invoiceReducer,
+    customersDetails: state.customerReducer,
+    productsDetails: state.productsReducer,
   };
 };
 

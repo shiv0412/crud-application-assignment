@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
-import InvoiceTemplate from "./InvoiceTemplate";
 
 //styled components
 const ModalContainer = styled.div`
@@ -119,26 +118,26 @@ const Button = styled.button`
 
 const InvoiceRead = (
   {
-    isShowInvoice,
+    isShowInvoiceDetails,
     invoiceProductDetails,
     invoiceBillingDetails,
-    handleClose,
+    handlePopUpClose,
     handlePrint,
   },
   ref
 ) => {
-  if (!isShowInvoice) {
+  if (!isShowInvoiceDetails) {
     return null;
   }
 
   return (
     <>
-      <ModalContainer onClick={handleClose} >
+      <ModalContainer onClick={handlePopUpClose}>
         <ModalContent onClick={(e) => e.stopPropagation()}>
           <ModalHeader>
             <ModalTitle>Invoice Details</ModalTitle>
             <Span>
-              <i className="window close icon" onClick={handleClose}></i>
+              <i className="window close icon" onClick={handlePopUpClose}></i>
             </Span>
           </ModalHeader>
           <ModalBody>
@@ -183,9 +182,17 @@ const InvoiceRead = (
                         <>
                           <tr>
                             <td>{product.productName}</td>
-                            <td>{product.unitPrice}</td>
+                            <td>
+                              {parseInt(product.unitPrice).toLocaleString(
+                                "en-IN"
+                              )}
+                            </td>
                             <td>{product.quantity}</td>
-                            <td>{product.itemTotal}</td>
+                            <td>
+                              {parseInt(product.itemTotal).toLocaleString(
+                                "en-IN"
+                              )}
+                            </td>
                           </tr>
                         </>
                       );
@@ -194,7 +201,13 @@ const InvoiceRead = (
               </div>
               <TotalDetails>
                 <div>Invoice Total</div>
-                <div>&#8377; {invoiceBillingDetails[0].invoiceTotal}/-</div>
+                <div>
+                  &#8377;{" "}
+                  {parseInt(
+                    invoiceBillingDetails[0].invoiceTotal
+                  ).toLocaleString("en-IN")}
+                  /-
+                </div>
               </TotalDetails>
             </Contianer>
             <Button onClick={() => handlePrint()}>Print Invoice</Button>

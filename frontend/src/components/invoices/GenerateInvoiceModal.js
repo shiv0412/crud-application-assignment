@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import styled from "styled-components";
 import { Field, Form, Formik } from "formik";
 import * as yup from "yup";
@@ -6,13 +6,14 @@ import { connect } from "react-redux";
 import axios from "axios";
 import uniqueRandom from "unique-random";
 import _ from "lodash";
+import { useReactToPrint } from "react-to-print";
 
 import CustomErrorMessage from "../shared/CustomerErrorMessage";
 import { SelectField } from "../shared/CustomSelectField";
-import AddProduct from "./AddProuct";
+import AddProduct from "./AddProduct";
 import { setPurchasedProducts, updateStore } from "../../redux/actions/Actions";
 import { setGeneratedInvoiceDetails } from "../../redux/actions/Actions";
-import InvoiceContainer from "./InvoiceContainer";
+import NewInvoice from "./NewInvoice";
 
 //form validation
 const validationSchema = yup.object({
@@ -97,11 +98,11 @@ const TotalDetails = styled.div`
 
 const InvoiceEdit = ({
   isEditing,
-  customerData,
-  productData,
+  customersDetails,
+  productsDetails,
   purchasedProducts,
   generatedInvoiceDetails,
-  handleFormClose,
+  handlePopUpClose,
   updateStore,
   setPurchasedProducts,
   setGeneratedInvoiceDetails,
@@ -111,14 +112,18 @@ const InvoiceEdit = ({
     React.useState(false);
   const randomNumber = uniqueRandom(11000, 20000); //just for test not a real use case
   const invoiceItemsTotal = [];
+  const componentRef = useRef();
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+  });
 
   if (!isEditing) {
     return null;
   }
 
-  const getCustomersOptions = (customerData) => {
+  const createCustomerSelectOptions = (customersDetails) => {
     const options = [];
-    customerData.forEach((customer) => {
+    customersDetails.forEach((customer) => {
       options.push({
         value: customer.customerName,
         label: customer.customerName,
@@ -128,7 +133,7 @@ const InvoiceEdit = ({
   };
 
   const handleProductAdd = (values) => {
-    const addedProduct = productData.filter((product) => {
+    const addedProduct = productsDetails.filter((product) => {
       return (
         product.productName.toLowerCase().trim() ===
         values.productName.toLowerCase().trim()
@@ -148,7 +153,7 @@ const InvoiceEdit = ({
   };
 
   const handleGenerateInvoice = (values, purchasedProducts) => {
-    const customerDetails = customerData.filter((customer) => {
+    const customerDetails = customersDetails.filter((customer) => {
       return customer.customerName === values.customerName;
     });
     setGeneratedInvoiceDetails({
@@ -164,46 +169,50 @@ const InvoiceEdit = ({
         billingDetails: values,
         purchasedProducts: purchasedProducts,
         customerDetails: customerDetails,
-        invoiceTotal:_.sum(invoiceItemsTotal)
+        invoiceTotal: _.sum(invoiceItemsTotal),
       },
     });
   };
 
-  const handleReceiptClosed = () => {
+  const handleInvoicePopUp = () => {
     updateStore();
-    handleFormClose();
+    handlePopUpClose();
     setIsInvoiceGenerated(false);
     setIsProductAddedToInvoice(false);
   };
 
   return (
-    <ModalContainer onClick={handleFormClose}>
+    <ModalContainer onClick={handlePopUpClose}>
       <ModalContent onClick={(e) => e.stopPropagation()}>
         <ModalHeader>
           <ModalTitle>Generate Invoice</ModalTitle>
           <Span>
-            <i className="window close icon" onClick={handleReceiptClosed}></i>
+            <i className="window close icon" onClick={handleInvoicePopUp}></i>
           </Span>
         </ModalHeader>
         <ModalBody>
           {isInvoiceGenerated &&
           generatedInvoiceDetails &&
           generatedInvoiceDetails.length > 0 ? (
-            <InvoiceContainer
-              invoiceValues={generatedInvoiceDetails}
-              handleClose={handleFormClose}
-              handlePopUp={() => setIsInvoiceGenerated(false)}
+            <NewInvoice
+              invoiceDetails={generatedInvoiceDetails}
+              handlePopUpClose={() => {
+                handlePopUpClose();
+                setIsInvoiceGenerated(false);
+              }}
               updateStore={updateStore}
+              ref={componentRef}
+              handlePrint={handlePrint}
             />
           ) : (
             <div className="row">
               <div className="col-md-6">
                 <AddProduct
-                  productData={productData}
+                  productsDetails={productsDetails}
                   handleProductAdd={handleProductAdd}
                 />
                 {isProductAddedToInvoice ? (
-                  <span>No product added please add atleast one product.</span>
+                  <span>No product added, please add atleast one product.</span>
                 ) : (
                   ""
                 )}
@@ -237,10 +246,9 @@ const InvoiceEdit = ({
                     <StyledField
                       name={"customerName"}
                       component={SelectField}
-                      options={getCustomersOptions(customerData)}
+                      options={createCustomerSelectOptions(customersDetails)}
                       placeholder={"Select customer..."}
                     />
-
                     <StyledField
                       type="date"
                       name="invoiceDate"
@@ -268,11 +276,17 @@ const InvoiceEdit = ({
                         <>
                           <tr>
                             <td>{product.productName}</td>
-                            <td>{product.unitPrice}</td>
+                            <td>
+                              {parseInt(product.unitPrice).toLocaleString(
+                                "en-IN"
+                              )}
+                            </td>
                             <td>{product.productQuantity}</td>
                             <td>
-                              {parseInt(product.unitPrice) *
-                                parseInt(product.productQuantity)}
+                              {(
+                                parseInt(product.unitPrice) *
+                                parseInt(product.productQuantity)
+                              ).toLocaleString("en-IN")}
                             </td>
                           </tr>
                           <span style={{ display: "none" }}>
@@ -287,7 +301,8 @@ const InvoiceEdit = ({
                 </table>
                 {invoiceItemsTotal.length > 0 && (
                   <TotalDetails>
-                    <b>Invoice Total</b> : &#8377;{_.sum(invoiceItemsTotal)}/-
+                    <b>Invoice Total(&#8377;)</b> :{" "}
+                    {_.sum(invoiceItemsTotal).toLocaleString("en-IN")}/-
                   </TotalDetails>
                 )}
               </div>

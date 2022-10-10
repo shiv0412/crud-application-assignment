@@ -60,7 +60,7 @@ const CustomerRead = ({
                     <td>
                       <i
                         className="edit icon"
-                        onClick={()=>editCustomerDetails(customer.loginID)}
+                        onClick={() => editCustomerDetails(customer.loginID)}
                       ></i>
                       <i
                         className="trash icon"

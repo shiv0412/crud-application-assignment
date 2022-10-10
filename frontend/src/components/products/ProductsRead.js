@@ -34,11 +34,7 @@ const TableContainer = styled.div`
   }
 `;
 
-const ProductRead = ({
-  products,
-  editProductDetails,
-  handleProductDelete,
-}) => {
+const ProductRead = ({ products, editProductDetails, handleProductDelete }) => {
   return (
     <>
       <TableContainer>
@@ -54,11 +50,13 @@ const ProductRead = ({
                 <>
                   <tr>
                     <td>{product.productName}</td>
-                    <td>{product.unitPrice}</td>
+                    <td>
+                      {parseInt(product.unitPrice).toLocaleString("en-IN")}
+                    </td>
                     <td>
                       <i
                         className="edit icon"
-                        onClick={()=>editProductDetails(product.productName)}
+                        onClick={() => editProductDetails(product.productName)}
                       ></i>
                       <i
                         className="trash icon"

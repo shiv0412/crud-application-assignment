@@ -3,7 +3,7 @@ import styled from "styled-components";
 import _ from "lodash";
 import { forwardRef } from "react";
 
-const Contianer = styled.div`
+const Container = styled.div`
   font-weight: bold;
   padding: 25px 25px 0 25px;
   table {
@@ -23,7 +23,6 @@ const Contianer = styled.div`
     padding: 10px 0;
   }
 `;
-
 const Header = styled.div`
   padding: 10px 0;
   border: 2px solid black;
@@ -72,24 +71,23 @@ const Button = styled.button`
   }
 `;
 
-const InvoiceTemplate = (
-  { invoiceValues, updateStore, handleClose, handlePopUp, handlePrint },
+const NewInvoice = (
+  { invoiceDetails, updateStore, handlePopUpClose, handlePrint },
   ref
 ) => {
   const invoiceItemsTotal = [];
   const handleInvoicePrint = () => {
     handlePrint();
     updateStore();
-    handleClose();
-    handlePopUp();
+    handlePopUpClose();
   };
   return (
     <>
-      {invoiceValues &&
-        invoiceValues.map((invoiceValues) => {
+      {invoiceDetails &&
+        invoiceDetails.map((invoiceDetails) => {
           return (
             <>
-              <Contianer ref={ref}>
+              <Container ref={ref}>
                 <Header>
                   <h1>Invoice</h1>
                 </Header>
@@ -97,22 +95,24 @@ const InvoiceTemplate = (
                   <div>
                     <ul>
                       <li>
-                        Cust LoginId: {invoiceValues.customerDetails[0].loginID}
+                        Cust LoginId:
+                        {invoiceDetails.customerDetails[0].loginID}
                       </li>
                       <li>
-                        Cust Name: {invoiceValues.billingDetails.customerName}
+                        Cust Name: {invoiceDetails.billingDetails.customerName}
                       </li>
-                      <li>Phone: {invoiceValues.customerDetails[0].phone}</li>
+                      <li>Phone: {invoiceDetails.customerDetails[0].phone}</li>
                     </ul>
                   </div>
                   <div>
                     <ul>
                       <li>
-                        Invoice No.:{" "}
-                        {invoiceValues.billingDetails.invoiceNumber}
+                        Invoice No.:
+                        {invoiceDetails.billingDetails.invoiceNumber}
                       </li>
                       <li>
-                        Invoice Date: {invoiceValues.billingDetails.invoiceDate}
+                        Invoice Date:
+                        {invoiceDetails.billingDetails.invoiceDate}
                       </li>
                     </ul>
                   </div>
@@ -125,17 +125,23 @@ const InvoiceTemplate = (
                       <th>Quantity</th>
                       <th>Total (&#8377;)</th>
                     </tr>
-                    {invoiceValues.purchasedProducts.length > 0 &&
-                      invoiceValues.purchasedProducts.map((product) => {
+                    {invoiceDetails.purchasedProducts.length > 0 &&
+                      invoiceDetails.purchasedProducts.map((product) => {
                         return (
                           <>
                             <tr>
                               <td>{product.productName}</td>
-                              <td>{product.unitPrice}</td>
+                              <td>
+                                {parseInt(product.unitPrice).toLocaleString(
+                                  "en-IN"
+                                )}
+                              </td>
                               <td>{product.productQuantity}</td>
                               <td>
-                                {parseInt(product.unitPrice) *
-                                  parseInt(product.productQuantity)}
+                                {(
+                                  parseInt(product.unitPrice) *
+                                  parseInt(product.productQuantity)
+                                ).toLocaleString("en-IN")}
                               </td>
                             </tr>
                             <span style={{ display: "none" }}>
@@ -151,10 +157,14 @@ const InvoiceTemplate = (
                 </div>
                 <TotalDetails>
                   <div>Invoice Total</div>
-                  <div>&#8377; {_.sum(invoiceItemsTotal)}/-</div>
+                  <div>
+                    &#8377; {_.sum(invoiceItemsTotal).toLocaleString("en-IN")}/-
+                  </div>
                 </TotalDetails>
-                <Button onClick={() => handleInvoicePrint()}>Print Invoice</Button>
-              </Contianer>
+                <Button onClick={() => handleInvoicePrint()}>
+                  Print Invoice
+                </Button>
+              </Container>
             </>
           );
         })}
@@ -162,4 +172,4 @@ const InvoiceTemplate = (
   );
 };
 
-export default forwardRef(InvoiceTemplate);
+export default forwardRef(NewInvoice);

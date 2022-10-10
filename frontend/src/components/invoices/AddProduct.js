@@ -2,10 +2,10 @@ import React, { useEffect } from "react";
 import styled from "styled-components";
 import { Field, Form, Formik } from "formik";
 
-import { defaultQuanity } from "../../constants";
+import { productQuantitySelectOptions } from "../../constants";
 import { SelectField } from "../shared/CustomSelectField";
 
-const Contianer = styled.div`
+const Container = styled.div`
   div {
     margin: 0;
   }
@@ -15,7 +15,6 @@ const Contianer = styled.div`
     padding: 10px 0;
   }
 `;
-
 const StyledField = styled(Field)`
   border: 1.5px solid lightgray;
   width: 100%;
@@ -36,16 +35,16 @@ const Button = styled.button`
   font-size: 25px;
 `;
 
-const AddProduct = ({ productData, handleProductAdd }) => {
+const AddProduct = ({ productsDetails, handleProductAdd }) => {
   const [productsOptions, setProductsOptions] = React.useState();
 
   useEffect(() => {
-    setProductsOptions(getProductsOptions(productData));
+    setProductsOptions(createProductSelectOptions(productsDetails));
   }, []);
 
-  const getProductsOptions = (productData) => {
+  const createProductSelectOptions = (productsDetails) => {
     const options = [];
-    productData.forEach((product) => {
+    productsDetails.forEach((product) => {
       options.push({
         value: product.productName,
         label: product.productName,
@@ -54,9 +53,9 @@ const AddProduct = ({ productData, handleProductAdd }) => {
     return options;
   };
 
-  const getQuantityOptions = (defaultQuanity) => {
+  const createQuantitySelectOptions = (productQuantitySelectOptions) => {
     const options = [];
-    defaultQuanity.forEach((quantity) => {
+    productQuantitySelectOptions.forEach((quantity) => {
       options.push({
         value: quantity,
         label: quantity,
@@ -65,7 +64,7 @@ const AddProduct = ({ productData, handleProductAdd }) => {
     return options;
   };
 
-  const optionUpdate = (option) => {
+  const handleSelection = (option) => {
     const updatedOptions = productsOptions.filter((options) => {
       return options.value !== option.productName;
     });
@@ -74,7 +73,7 @@ const AddProduct = ({ productData, handleProductAdd }) => {
 
   return (
     <>
-      <Contianer>
+      <Container>
         <h4>Add Products</h4>
         <Formik
           initialValues={{
@@ -84,7 +83,7 @@ const AddProduct = ({ productData, handleProductAdd }) => {
           onSubmit={(values, { setSubmitting, resetForm }) => {
             setTimeout(() => {
               handleProductAdd(values);
-              optionUpdate(values);
+              handleSelection(values);
               setSubmitting(false);
               resetForm();
             }, 400);
@@ -104,7 +103,9 @@ const AddProduct = ({ productData, handleProductAdd }) => {
                 <StyledField
                   name={"productQuantity"}
                   component={SelectField}
-                  options={getQuantityOptions(defaultQuanity)}
+                  options={createQuantitySelectOptions(
+                    productQuantitySelectOptions
+                  )}
                   placeholder={"Select quantity..."}
                 />
               </div>
@@ -116,7 +117,7 @@ const AddProduct = ({ productData, handleProductAdd }) => {
             </div>
           </Form>
         </Formik>
-      </Contianer>
+      </Container>
     </>
   );
 };
