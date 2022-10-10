@@ -13,9 +13,10 @@ import {
 
 const Contianer = styled.div`
   width: 100%;
-  border: 1px solid black;
+  border-left: 1.5px solid black;
+  border-right: 1.5px solid black;
   font-family: arial;
-  height: auto;
+  height: 100vh;
 `;
 const Header = styled.div`
   display: flex;

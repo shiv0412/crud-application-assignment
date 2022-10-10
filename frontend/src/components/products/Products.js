@@ -13,7 +13,6 @@ import {
 
 const Contianer = styled.div`
   width: 100%;
-  border: 1px solid black;
   font-family: arial;
 `;
 const Header = styled.div`

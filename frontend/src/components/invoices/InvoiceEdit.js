@@ -91,8 +91,8 @@ const Label = styled.label``;
 const TotalDetails = styled.div`
   text-align: right;
   padding-right: 40px;
-  border-top:1px solid black;
-  border-bottom:1px solid black;
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
 `;
 
 const InvoiceEdit = ({
@@ -284,9 +284,11 @@ const InvoiceEdit = ({
                       );
                     })}
                 </table>
-                <TotalDetails>
-                  <b>Invoice Total</b> : &#8377; {_.sum(invoiceItemsTotal)}
-                </TotalDetails>
+                {invoiceItemsTotal.length > 0 && (
+                  <TotalDetails>
+                    <b>Invoice Total</b> : &#8377; {_.sum(invoiceItemsTotal)}
+                  </TotalDetails>
+                )}
               </div>
             </div>
           )}
