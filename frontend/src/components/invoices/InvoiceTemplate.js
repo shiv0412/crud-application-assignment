@@ -52,6 +52,8 @@ const TotalDetails = styled.div`
   div:nth-child(1) {
     width: 90%;
     border: 2px solid black;
+    text-align: right;
+    padding-right:50px;
   }
   div:nth-child(2) {
     width: 14.5%;
@@ -121,9 +123,9 @@ const InvoiceTemplate = ({
                   <table className="table table-bodered">
                     <tr>
                       <th>Product Name</th>
-                      <th>Unit Price</th>
+                      <th>Unit Price (&#8377;)</th>
                       <th>Quantity</th>
-                      <th>Total</th>
+                      <th>Total (&#8377;)</th>
                     </tr>
                     {invoiceValues.purchasedProducts.length > 0 &&
                       invoiceValues.purchasedProducts.map((product) => {
@@ -150,8 +152,8 @@ const InvoiceTemplate = ({
                   </table>
                 </div>
                 <TotalDetails>
-                  <div>Total</div>
-                  <div>&#8377; {_.sum(invoiceItemsTotal)}</div>
+                  <div>Invoice Total</div>
+                  <div>&#8377; {_.sum(invoiceItemsTotal)}/-</div>
                 </TotalDetails>
                 <Button onClick={() => handleDownload()}>Download</Button>
               </Contianer>

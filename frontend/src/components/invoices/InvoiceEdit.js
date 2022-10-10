@@ -90,7 +90,7 @@ const Button = styled.button`
 const Label = styled.label``;
 const TotalDetails = styled.div`
   text-align: right;
-  padding-right: 40px;
+  padding-right: 60px;
   border-top: 1px solid black;
   border-bottom: 1px solid black;
 `;
@@ -256,9 +256,9 @@ const InvoiceEdit = ({
                 <table className="table">
                   <tr>
                     <th>Product Name</th>
-                    <th>Unit Price</th>
+                    <th>Unit Price (&#8377;)</th>
                     <th>Quantity</th>
-                    <th>Total</th>
+                    <th>Total (&#8377;)</th>
                   </tr>
                   {purchasedProducts &&
                     purchasedProducts.length > 0 &&
@@ -286,7 +286,7 @@ const InvoiceEdit = ({
                 </table>
                 {invoiceItemsTotal.length > 0 && (
                   <TotalDetails>
-                    <b>Invoice Total</b> : &#8377; {_.sum(invoiceItemsTotal)}
+                    <b>Invoice Total</b> : &#8377;{_.sum(invoiceItemsTotal)}/-
                   </TotalDetails>
                 )}
               </div>

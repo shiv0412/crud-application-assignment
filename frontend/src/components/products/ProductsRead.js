@@ -45,7 +45,7 @@ const ProductRead = ({
         <table className="table table-bordered">
           <tr>
             <th>Product Name</th>
-            <th>Unit Price</th>
+            <th>Unit Price (&#8377;)</th>
             <th>Action</th>
           </tr>
           {products &&
