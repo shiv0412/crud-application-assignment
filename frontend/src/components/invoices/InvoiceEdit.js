@@ -12,7 +12,7 @@ import { SelectField } from "../shared/CustomSelectField";
 import AddProduct from "./AddProucts";
 import { setPurchasedProducts, updateStore } from "../../redux/actions/Actions";
 import { setGeneratedInvoiceDetails } from "../../redux/actions/Actions";
-import InvoiceTemplate from "./InvoiceTemplate";
+import InvoiceContainer from "./InvoiceContainer";
 
 //form validation
 const validationSchema = yup.object({
@@ -188,7 +188,7 @@ const InvoiceEdit = ({
           {isInvoiceGenerated &&
           generatedInvoiceDetails &&
           generatedInvoiceDetails.length > 0 ? (
-            <InvoiceTemplate
+            <InvoiceContainer
               invoiceValues={generatedInvoiceDetails}
               handleClose={handleFormClose}
               handlePopUp={() => setIsInvoiceGenerated(false)}

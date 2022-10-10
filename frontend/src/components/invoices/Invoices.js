@@ -92,6 +92,7 @@ const Invoices = ({
   };
 
   return (
+    <>
     <Contianer>
       <Header>
         <h3>Manage Invoices</h3>
@@ -127,6 +128,7 @@ const Invoices = ({
         productData={productData}
       />
     </Contianer>
+    </>
   );
 };
 

@@ -1,8 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import _ from "lodash";
-
-import { toastSuccessNotification } from "../../constants";
+import { forwardRef } from "react";
 
 const Contianer = styled.div`
   font-weight: bold;
@@ -53,7 +52,7 @@ const TotalDetails = styled.div`
     width: 90%;
     border: 2px solid black;
     text-align: right;
-    padding-right:50px;
+    padding-right: 50px;
   }
   div:nth-child(2) {
     width: 14.5%;
@@ -65,23 +64,22 @@ const Button = styled.button`
   display: block;
   padding: 5px 15px;
   border: none;
-  background-color: orangered;
+  background-color: darkred;
   color: #fff;
   font-family: Arial, Helvetica, sans-serif;
+  @media print {
+    display: none;
+  }
 `;
 
-const InvoiceTemplate = ({
-  invoiceValues,
-  updateStore,
-  handleClose,
-  handlePopUp,
-}) => {
+const InvoiceTemplate = (
+  { invoiceValues, updateStore, handleClose, handlePopUp, handlePrint },
+  ref
+) => {
   const invoiceItemsTotal = [];
-  const handleDownload = () => {
+  const handleInvoicePrint = () => {
+    handlePrint();
     updateStore();
-    toastSuccessNotification(
-      "Download feature not implemented as of now. Thanks this is the end of project flow.Cheers...."
-    );
     handleClose();
     handlePopUp();
   };
@@ -91,7 +89,7 @@ const InvoiceTemplate = ({
         invoiceValues.map((invoiceValues) => {
           return (
             <>
-              <Contianer>
+              <Contianer ref={ref}>
                 <Header>
                   <h1>Invoice</h1>
                 </Header>
@@ -155,7 +153,7 @@ const InvoiceTemplate = ({
                   <div>Invoice Total</div>
                   <div>&#8377; {_.sum(invoiceItemsTotal)}/-</div>
                 </TotalDetails>
-                <Button onClick={() => handleDownload()}>Download</Button>
+                <Button onClick={() => handleInvoicePrint()}>Print Invoice</Button>
               </Contianer>
             </>
           );
@@ -164,4 +162,4 @@ const InvoiceTemplate = ({
   );
 };
 
-export default InvoiceTemplate;
+export default forwardRef(InvoiceTemplate);
