@@ -27,13 +27,13 @@ const StyledField = styled(Field)`
   }
 `;
 const Button = styled.button`
-  margin: 20px auto 10px auto;
+  margin: 15px auto 10px auto;
   display: block;
   padding: 5px 5px;
   border: none;
-  background-color: orangered;
-  color: #fff;
-  font-family: Arial, Helvetica, sans-serif;
+  border-radius:50%;
+  color:orangered;
+  font-size: 25px;
 `;
 
 const AddProduct = ({ productData, handleProductAdd }) => {
@@ -93,7 +93,9 @@ const AddProduct = ({ productData, handleProductAdd }) => {
                 />
               </div>
               <div className="col-md-2">
-                <Button>Add Product</Button>
+                <Button title="Add product">
+                  <i className="add circle icon"></i>
+                </Button>
               </div>
             </div>
           </Form>

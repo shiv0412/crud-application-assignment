@@ -1,9 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 import _ from "lodash";
-import { connect } from "react-redux";
 
-import { updateStore } from "../../redux/actions/Actions";
+import { toastSuccessNotification } from "../../constants";
 
 const Contianer = styled.div`
   font-weight: bold;
@@ -79,12 +78,12 @@ const InvoiceTemplate = ({
 }) => {
   const invoiceItemsTotal = [];
   const handleDownload = () => {
-    alert(
-      "download feature not yet implemented good day here the project ends"
+    updateStore();
+    toastSuccessNotification(
+      "Download feature not implemented as of now. Thanks this is the end of project flow.Cheers...."
     );
     handleClose();
     handlePopUp();
-    updateStore();
   };
   return (
     <>
@@ -92,7 +91,6 @@ const InvoiceTemplate = ({
         invoiceValues.map((invoiceValues) => {
           return (
             <>
-              {" "}
               <Contianer>
                 <Header>
                   <h1>Invoice</h1>
@@ -166,12 +164,4 @@ const InvoiceTemplate = ({
   );
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    updateStore: () => {
-      dispatch(updateStore);
-    },
-  };
-};
-
-export default connect(mapDispatchToProps)(InvoiceTemplate);
+export default InvoiceTemplate;

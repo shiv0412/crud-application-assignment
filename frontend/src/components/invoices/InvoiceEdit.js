@@ -8,7 +8,7 @@ import axios from "axios";
 import CustomErrorMessage from "../shared/CustomerErrorMessage";
 import { SelectField } from "../shared/CustomSelectField";
 import AddProduct from "./AddProucts";
-import { setPurchasedProducts } from "../../redux/actions/Actions";
+import { setPurchasedProducts, updateStore } from "../../redux/actions/Actions";
 import { setGeneratedInvoiceDetails } from "../../redux/actions/Actions";
 import InvoiceTemplate from "./InvoiceTemplate";
 
@@ -93,11 +93,11 @@ const InvoiceEdit = ({
   purchasedProducts,
   generatedInvoiceDetails,
   handleFormClose,
+  updateStore,
   setPurchasedProducts,
   setGeneratedInvoiceDetails,
 }) => {
   const [isInvoiceGenerated, setIsInvoiceGenerated] = React.useState(false);
-  const [productsDetails, setProductsDetails] = React.useState([]);
   if (!isEditing) {
     return null;
   }
@@ -114,15 +114,21 @@ const InvoiceEdit = ({
 
   const handleProductAdd = (values) => {
     const addedProduct = productData.filter((product) => {
-      return product.productName === values.productName;
+      return (
+        product.productName.toLowerCase().trim() ===
+        values.productName.toLowerCase().trim()
+      );
     });
-    setPurchasedProducts({
-      productName: addedProduct[0].productName,
-      productQuantity: values.productQuantity,
-      unitPrice: addedProduct[0].unitPrice,
-      total:
-        parseInt(addedProduct[0].unitPrice) * parseInt(values.productQuantity),
-    });
+    if (addedProduct.length > 0) {
+      setPurchasedProducts({
+        productName: addedProduct[0].productName,
+        productQuantity: values.productQuantity,
+        unitPrice: addedProduct[0].unitPrice,
+        total:
+          parseInt(addedProduct[0].unitPrice) *
+          parseInt(values.productQuantity),
+      });
+    }
   };
 
   const handleGenerateInvoice = (values, purchasedProducts) => {
@@ -168,6 +174,7 @@ const InvoiceEdit = ({
               invoiceValues={generatedInvoiceDetails}
               handleClose={handleFormClose}
               handlePopUp={() => setIsInvoiceGenerated(false)}
+              updateStore={updateStore}
             />
           ) : (
             <div className="row">
@@ -224,9 +231,9 @@ const InvoiceEdit = ({
                     <th>Quantity</th>
                     <th>Total</th>
                   </tr>
-                  {productsDetails &&
-                    productsDetails.length > 0 &&
-                    productsDetails.map((product) => {
+                  {purchasedProducts &&
+                    purchasedProducts.length > 0 &&
+                    purchasedProducts.map((product) => {
                       return (
                         <>
                           <tr>
@@ -265,6 +272,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     setGeneratedInvoiceDetails: (data) => {
       dispatch(setGeneratedInvoiceDetails(data));
+    },
+    updateStore: () => {
+      dispatch(updateStore());
     },
   };
 };
